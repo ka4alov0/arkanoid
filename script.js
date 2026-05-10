@@ -17,6 +17,37 @@ const ball = {
     dy: 2,
 }
 
+const brickRows = 4
+
+const brickColumns = 8
+
+const brickWidth = 60
+
+const brickHeight = 20
+
+const brickPad = 10
+
+const brickPadTop = 25
+
+const brickPadLeft = 25
+
+const bricks = []
+
+for(let i = 0; i < brickRows; i++){
+    bricks[i] = []
+    for(let j = 0; j < brickColumns; j++){
+        const brickX = j * (brickWidth + brickPad) + brickPadLeft
+        const brickY = i * (brickHeight + brickPad) + brickPadTop
+        bricks[i][j] = {
+            x: brickX,
+            y: brickY,
+            width: brickWidth,
+            height: brickHeight,
+            status: true
+        }
+    }
+}
+
 function drawPlatform() {
     ctx.fillStyle = 'black'
     ctx.fillRect(platform.x, platform.y, platform.width, platform.height)
@@ -30,9 +61,22 @@ function drawBall() {
     ctx.closePath()
 }
 
+function drawBricks() {
+    for(let i = 0; i < brickRows; i++){
+        for(let j = 0; j < brickColumns; j++){
+            const brick = bricks[i][j]
+            if(brick.status) {
+                ctx.fillStyle = 'black'
+                ctx.fillRect(brick.x, brick.y, brick.width, brick.height)
+            }  
+        }
+    }
+}
+
 function draw() {
     drawPlatform()
     drawBall()
+    drawBricks()
 }
 
 draw()
