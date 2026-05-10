@@ -73,10 +73,34 @@ function drawBricks() {
     }
 }
 
+function moveBall() {
+    ball.x += ball.dx;
+    ball.y -= ball.dy;
+    if(ball.x + ball.radius >= game.width) {
+        ball.dx = -ball.dx
+    }
+    if(ball.y - ball.radius < 0) {
+        ball.dy = -ball.dy
+    }
+    if(ball.x - ball.radius < 0) {
+        ball.dx = -ball.dx
+    }
+    if(ball.x + ball.radius >= platform.x &&
+        ball.x + ball.radius <= platform.x + platform.width &&
+        ball.y + ball.radius >= platform.y &&
+        ball.y + ball.radius <= platform.y + platform.height
+    ) {
+        ball.dy = -ball.dy
+    }
+}
+
 function draw() {
+    ctx.clearRect(0, 0, game.width, game.height)
     drawPlatform()
     drawBall()
     drawBricks()
+    moveBall()
+    requestAnimationFrame(draw)
 }
 
 draw()
