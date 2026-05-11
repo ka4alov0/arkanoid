@@ -11,10 +11,10 @@ const platform = {
 
 const ball = {
     x: game.width/2,
-    y: game.height/2 + 80,
+    y: game.height/2 + 70,
     radius: 10,
-    dx: 2,
-    dy: 2,
+    dx: 0.5,
+    dy: 0.5,
 }
 
 const brickRows = 4
@@ -86,11 +86,27 @@ function moveBall() {
         ball.dx = -ball.dx
     }
     if(ball.x + ball.radius >= platform.x &&
-        ball.x + ball.radius <= platform.x + platform.width &&
-        ball.y + ball.radius >= platform.y &&
-        ball.y + ball.radius <= platform.y + platform.height
-    ) {
+    ball.x + ball.radius <= platform.x + platform.width &&
+    ball.y + ball.radius >= platform.y &&
+    ball.y + ball.radius <= platform.y + platform.height) {
         ball.dy = -ball.dy
+    }
+}
+
+function collision() {
+    for(let i = 0; i < brickRows; i++){
+        for(let j = 0; j < brickColumns; j++){
+            const brick = bricks[i][j]
+            if(brick.status){
+                if(ball.x > brick.x &&
+                ball.x < brick.x + brick.width &&
+                ball.y + ball.radius > brick.y &&
+                ball.y - ball.radius < brick.y + brick.height) {
+                    ball.dy = -ball.dy
+                    brick.status = false
+                }
+            }
+        }
     }
 }
 
@@ -100,6 +116,7 @@ function draw() {
     drawBall()
     drawBricks()
     moveBall()
+    collision()
     requestAnimationFrame(draw)
 }
 
