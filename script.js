@@ -1,6 +1,8 @@
 const game = document.getElementById("arkanoid")
 const ctx = game.getContext("2d")
 
+let gameStart = false
+
 const platform = {
     x: game.width/2 - 50,
     y: game.height - 30,
@@ -76,6 +78,9 @@ function drawBricks() {
 }
 
 function moveBall() {
+    if(!gameStart) {
+        return
+    }
     ball.x += ball.dx;
     ball.y -= ball.dy;
     if(ball.x + ball.radius >= game.width) {
@@ -108,6 +113,7 @@ function lose() {
     platform.x = game.width/2 - 50
     platform.y = game.height - 30
     score = 0
+    gameStart = false
     for(let i = 0; i < brickRows; i++){
         for(let j = 0; j < brickColumns; j++){
             const brick = bricks[i][j]
@@ -116,6 +122,29 @@ function lose() {
             }
         }
     }
+}
+
+function win() {
+    if(score === brickColumns * brickRows) {
+        alert("ПОБЕДА!")
+        ball.x = game.width/2
+        ball.y = game.height/2 + 70
+        ball.dx = 1
+        ball.dy = 1
+        platform.x = game.width/2 - 50
+        platform.y = game.height - 30
+        score = 0
+        gameStart = false
+        for(let i = 0; i < brickRows; i++){
+            for(let j = 0; j < brickColumns; j++){
+                const brick = bricks[i][j]
+                if(!brick.status){
+                    brick.status = true
+                }
+            }
+        }
+    }
+    
 }
 
 function collision() {
@@ -148,10 +177,22 @@ function scoreText() {
 
 document.addEventListener('keydown', (e) => {
     if(e.key === "ArrowLeft"){
-        platform.x -= platform.speed
+        if (platform.x < 0) {
+            platform.x = 0
+        }
+        else platform.x -= platform.speed
     }
     if(e.key === "ArrowRight"){
-        platform.x += platform.speed
+        if (platform.x + platform.width > game.width) {
+            platform.x = game.width - platform.width
+        }
+        else platform.x += platform.speed
+    }
+})
+
+document.addEventListener('keydown', (e) => {
+    if(e.key === " "){
+        gameStart = true
     }
 })
 
@@ -163,6 +204,7 @@ function draw() {
     moveBall()
     collision()
     scoreText()
+    win()
     requestAnimationFrame(draw)
 }
 
