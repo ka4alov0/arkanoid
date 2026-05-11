@@ -6,15 +6,15 @@ const platform = {
     y: game.height - 30,
     width: 100,
     height: 15,
-    speed: 6,
+    speed: 10,
 }
 
 const ball = {
     x: game.width/2,
     y: game.height/2 + 70,
     radius: 10,
-    dx: 0.5,
-    dy: 0.5,
+    dx: 1,
+    dy: 1,
 }
 
 const brickRows = 4
@@ -90,6 +90,7 @@ function moveBall() {
     ball.y + ball.radius >= platform.y &&
     ball.y + ball.radius <= platform.y + platform.height) {
         ball.dy = -ball.dy
+        ball.y = platform.y - ball.radius
     }
 }
 
@@ -109,6 +110,15 @@ function collision() {
         }
     }
 }
+
+document.addEventListener('keydown', (e) => {
+    if(e.key === "ArrowLeft"){
+        platform.x -= platform.speed
+    }
+    if(e.key === "ArrowRight"){
+        platform.x += platform.speed
+    }
+})
 
 function draw() {
     ctx.clearRect(0, 0, game.width, game.height)
