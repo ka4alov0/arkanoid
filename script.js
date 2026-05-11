@@ -33,6 +33,8 @@ const brickPadLeft = 25
 
 const bricks = []
 
+let score = 0
+
 for(let i = 0; i < brickRows; i++){
     bricks[i] = []
     for(let j = 0; j < brickColumns; j++){
@@ -92,6 +94,28 @@ function moveBall() {
         ball.dy = -ball.dy
         ball.y = platform.y - ball.radius
     }
+    if(ball.y + ball.radius > game.height) {
+        lose()
+    }
+}
+
+function lose() {
+    alert("Вы проиграли")
+    ball.x = game.width/2
+    ball.y = game.height/2 + 70
+    ball.dx = 1
+    ball.dy = 1
+    platform.x = game.width/2 - 50
+    platform.y = game.height - 30
+    score = 0
+    for(let i = 0; i < brickRows; i++){
+        for(let j = 0; j < brickColumns; j++){
+            const brick = bricks[i][j]
+            if(!brick.status){
+                brick.status = true
+            }
+        }
+    }
 }
 
 function collision() {
@@ -103,12 +127,23 @@ function collision() {
                 ball.x < brick.x + brick.width &&
                 ball.y + ball.radius > brick.y &&
                 ball.y - ball.radius < brick.y + brick.height) {
+                    score++
                     ball.dy = -ball.dy
                     brick.status = false
                 }
             }
         }
     }
+}
+
+function scoreText() {
+    ctx.font = '18px Arial';
+    ctx.fillStyle = 'blue';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const x = game.width - 45
+    const y = 15
+    ctx.fillText("Счет: " + score, x, y)
 }
 
 document.addEventListener('keydown', (e) => {
@@ -127,6 +162,7 @@ function draw() {
     drawBricks()
     moveBall()
     collision()
+    scoreText()
     requestAnimationFrame(draw)
 }
 
